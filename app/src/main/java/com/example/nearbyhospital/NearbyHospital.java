@@ -6,7 +6,11 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -114,17 +118,33 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
                     builder1.setCancelable(true);
 
                     builder1.setPositiveButton(
-                            "Get Route",
+                            "Show Route",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Intent intent = new Intent(NearbyHospital.this, MakeRoute.class);
+
+
+                                    if(isGoogleMapsInstalled()){
+                                        Uri gmmIntentUri = Uri.parse("google.navigation:q="+to_lat+","+to_lng);
+                                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                        mapIntent.setPackage("com.google.android.apps.maps");
+                                        startActivity(mapIntent);
+                                        //finish();
+                                    }else{
+                                        Intent intent = new Intent(NearbyHospital.this, MakeRoute.class);
                                     intent.putExtra("current_lat", currentLatitude);
                                     intent.putExtra("current_lng", currentLongitude);
                                     intent.putExtra("destination_lat", to_lat);
                                     intent.putExtra("destination_lng", to_lng);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
-                                    finish();
+                                        finish();
+                                    }
+
+
+
+
+
+
                                     dialog.cancel();
                                 }
                             });
@@ -608,4 +628,29 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
         startActivity(intent);
         finish();
     }
+
+
+    public boolean isPackageExisted(String targetPackage){
+        PackageManager pm=getPackageManager();
+        try {
+            PackageInfo info =pm.getPackageInfo(targetPackage,PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isGoogleMapsInstalled()
+    {
+        try
+        {
+            ApplicationInfo info = getPackageManager().getApplicationInfo("com.google.android.apps.maps", 0 );
+            return true;
+        }
+        catch(PackageManager.NameNotFoundException e)
+        {
+            return false;
+        }
+    }
+
 }
