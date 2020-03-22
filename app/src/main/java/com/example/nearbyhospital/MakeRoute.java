@@ -86,8 +86,7 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
         Log.d("debug", "------------- Make route e ki paitesi--------------" + from_lat+" , "+from_lng+" , "+to_lat+" , "+to_lng);
 
           setLocation = findViewById(R.id.set_location);
-//        lottieAnimationView = findViewById(R.id.animationView2);
-//        linearLayout2 = findViewById(R.id.noRouteFound);
+
 
         setLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,13 +116,6 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-//        Polyline polyline1 = googleMap.addPolyline(new PolylineOptions()
-//                .clickable(true)
-//                .add(
-//                        new LatLng(-35.016, 143.321),
-//                        new LatLng(-32.491, 147.309)));
-//        getRoute();
-
 
         // Getting URL to the Google Directions API
         // String url = getDirectionsUrl(new LatLng(23.747949, 90.396824), new LatLng(23.866874, 90.404575));
@@ -138,31 +130,13 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
         downloadTask.execute(url);
 
 
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        // Set listeners for click events.
-
-
-        // List<LatLng> path = new ArrayList();
-
-
-        //Execute Directions API request
-//        GeoApiContext context = new GeoApiContext.Builder()
-//                .apiKey("YOUR_API_KEY")
-//                .build();
-//        DirectionsApiRequest req = DirectionsApi.getDirections(context, "41.385064,2.173403", "40.416775,-3.70379");
-
-        // polyline1.setTag("A");
         mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
             @Override
             public void onPolylineClick(Polyline polyline) {
 
             }
         });
-        // mMap.setOnPolylineClickListener();
-        // googleMap.setOnPolygonClickListener(this);
+
 
 
     }
@@ -207,17 +181,7 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
 
             Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_SHORT).show();
         }
-//        // Start marker
-//        MarkerOptions options = new MarkerOptions();
-//        options.position(start);
-//        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
-//        mMap.addMarker(options);
-//
-//        // End marker
-//        options = new MarkerOptions();
-//        options.position(end);
-//        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));
-//        map.addMarker(options);
+
     }
 
     @Override
@@ -225,70 +189,7 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
 
     }
 
-//    public void getRoute() {
-//        Routing routing = new Routing.Builder()
-//                .travelMode(Routing.TravelMode.WALKING)
-//                .withListener(this)
-//                .waypoints(new LatLng(23.747949, 90.396824), new LatLng(23.866874, 90.404575))
-//                .build();
-//        routing.execute();
-//    }
 
-//    private  void erase(){
-//        for (Polyline line : polylines){
-//            line.remove();
-//        }
-//        polylines.clear();
-//    }
-//
-//    private String getrequestURL(LatLng a , LatLng b){
-//        String org = "origin="+ a.latitude+" , "+a.longitude;
-//        String dest = "destination="+ b.latitude+" , "+b.longitude;
-//        String sensor = "sensor=false";
-//        String mode = "mode=driving";
-//        String param = org+"&"+dest+"&"+sensor+"&"+mode;
-//
-//        String out = "json";
-//
-//        String url = "https://maps.googleapis.com/maps/directios/"+out+"?"+param;
-//        return url;
-//    }
-//
-//    private  String requestDirection(String s) throws IOException {
-//        String resposndString = "";
-//        InputStream inputStream = null;
-//        HttpURLConnection httpURLConnection = null;
-//
-//        try {
-//            URL url = new URL(s);
-//            httpURLConnection = (HttpURLConnection) url.openConnection();
-//            httpURLConnection.connect();
-//
-//            inputStream = httpURLConnection.getInputStream();
-//            InputStreamReader inputStreamReader = new  InputStreamReader(inputStream);
-//            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-//            StringBuffer stringBuffer = new StringBuffer();
-//            String line = "";
-//            while ((line = bufferedReader.readLine()) != null) {
-//                stringBuffer.append(line);
-//            }
-//
-//            resposndString = stringBuffer.toString();
-//            bufferedReader.close();
-//            inputStreamReader.close();
-//
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (inputStream != null){
-//                inputStream.close();
-//        }
-//            return  resposndString;
-//
-//        }
-//    }
 
 
     public class TaskRequestDirection extends AsyncTask<String, Void, String> {
@@ -418,16 +319,14 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
                 }
 
                 if(lineOptions != null) {
-//                    linearLayout2.setVisibility(View.GONE);
-//                    lottieAnimationView.setVisibility(View.GONE);
+
 
                     lineOptions.addAll(points);
                     lineOptions.width(8);
                     lineOptions.color(Color.RED);
                     lineOptions.geodesic(true);
                 }else{
-//                    linearLayout2.setVisibility(View.VISIBLE);
-//                    lottieAnimationView.setVisibility(View.VISIBLE);
+
                 }
 
 
@@ -435,8 +334,7 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
             }
 
             if(lineOptions != null){
-//                linearLayout2.setVisibility(View.GONE);
-//                lottieAnimationView.setVisibility(View.GONE);
+
                 // Drawing polyline in the Google Map for the i-th route
                 mMap.addPolyline(lineOptions);
 
@@ -466,8 +364,7 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
 
                 }
             }else{
-//                linearLayout2.setVisibility(View.VISIBLE);
-//                lottieAnimationView.setVisibility(View.VISIBLE);
+
             }
 
 
@@ -633,21 +530,6 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
         }
 
     }
-//
-//    public void zoomRoute(GoogleMap googleMap, List<LatLng> lstLatLngRoute) {
-//
-//        if (googleMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()) return;
-//
-//        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-//        for (LatLng latLngPoint : lstLatLngRoute)
-//            boundsBuilder.include(latLngPoint);
-//
-//        int routePadding = 0;
-//
-//        LatLngBounds latLngBounds = boundsBuilder.build();
-//        googleMap.setPadding(10, 200, 10, 100);
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding));
-//    }
 
 
     public void zoomRoute(GoogleMap googleMap, List<LatLng> lstLatLngRoute) {
@@ -682,8 +564,6 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
             else if ((f > 9027) && (f < 18055)) { zoomLevel = 11.5f; }
             else if ((f > 18055) && (f < 36111)) { zoomLevel = 10.5f; }
             else if ((f > 36111) && (f < 722223)){ zoomLevel = 9.5f ; }
-
-
 
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngBounds.getCenter(), zoomLevel));
             googleMap.getMinZoomLevel();

@@ -168,18 +168,11 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
         });
 
 
-//        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
 
        // String url = getDirectionsUrl(new LatLng(23.866874, 90.404575));
         String url = getDirectionsUrl(new LatLng(Double.parseDouble(currentLatitude), Double.parseDouble(currentLongitude)));
-        //String url = getDirectionsUrl(new LatLng(23.747546005998082, 23.747546005998082), new LatLng(23.866874, 90.404575));
 
-        // DownloadTask downloadTask = new DownloadTask();
-        // MakeRoute.TaskRequestDirection downloadTask = new MakeRoute.TaskRequestDirection();
 
 
         TaskRequestDirection taskRequestDirection = new TaskRequestDirection();
@@ -205,31 +198,15 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
         GoogleMap mMap;
         String url;
 
-//        @Override
-//        protected String doInBackground(String... url) {
-//
-//            String data = "";
-//
-//            try {
-//                data = downloadUrl(url[0]);
-//            } catch (Exception e) {
-//                Log.d("debug", e.toString());
-//            }
-//            return data;
-//        }
+
 
         @Override
         protected String doInBackground(Object... objects) {
 
             Log.d("debug", objects.length+" , "+objects.toString());
 
-
-            // mMap = (GoogleMap)objects[0];
             url = (String)objects[0];
 
-            //create an object of download URL class
-
-            //DownloadURL downloadURL = new DownloadURL();
             try {
                 googlePlacesData = downloadUrl(url);
             } catch (IOException e) {
@@ -242,7 +219,6 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            // MakeRoute.ParserTask parserTask = new MakeRoute.ParserTask();
 
             List<HashMap<String , String>> nearbyPlaceList = null;
 
@@ -259,7 +235,12 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
         double lng = origin.longitude;
 
 
-        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius=10000&type=hospital&key=AIzaSyBkCNdgswUBcGOk6Yq9Jy0KR--_EUMPaTA");
+        StringBuilder googlePlaceUrl = new StringBuilder(
+                "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
+                "location="+lat+","+lng+
+                "&radius=10000" +
+                "&type=hospital" +
+                "&key=AIzaSyBkCNdgswUBcGOk6Yq9Jy0KR--_EUMPaTA");
 
 
 
@@ -293,7 +274,7 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
             mMap.addMarker(markerOptions);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(currentLatitude), Double.parseDouble(currentLongitude)), 12));
-            //mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
         }
     }
 
@@ -444,183 +425,6 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
 
 
 
-
-
-
-
-
-
-
-
-
-
-    public class DirectionsJSONParser {
-        /**
-         * Receives a JSONObject and returns a list of lists containing latitude and
-         * longitude
-         */
-
-
-        public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
-
-            List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String, String>>>();
-            JSONArray jRoutes = null;
-            JSONArray jLegs = null;
-            JSONArray jSteps = null;
-            JSONObject jDistance = null;
-            JSONObject jDuration = null;
-
-            try {
-
-                jRoutes = jObject.getJSONArray("routes");
-
-                /** Traversing all routes */
-                for (int i = 0; i < jRoutes.length(); i++) {
-                    jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
-
-                    List<HashMap<String, String>> path = new ArrayList<HashMap<String, String>>();
-
-                    /** Traversing all legs */
-                    for (int j = 0; j < jLegs.length(); j++) {
-
-                        /** Getting distance from the json data */
-                        jDistance = ((JSONObject) jLegs.get(j))
-                                .getJSONObject("distance");
-                        HashMap<String, String> hmDistance = new HashMap<String, String>();
-                        //dis = jDistance.getString("value");
-                        hmDistance.put("distance", jDistance.getString("text"));
-
-                        /** Getting duration from the json data */
-                        jDuration = ((JSONObject) jLegs.get(j))
-                                .getJSONObject("duration");
-                        HashMap<String, String> hmDuration = new HashMap<String, String>();
-                        hmDuration.put("duration", jDuration.getString("text"));
-
-                        /** Adding distance object to the path */
-                        path.add(hmDistance);
-
-                        /** Adding duration object to the path */
-                        path.add(hmDuration);
-
-                        jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
-
-                        /** Traversing all steps */
-                        for (int k = 0; k < jSteps.length(); k++) {
-                            String polyline = "";
-                            polyline = (String) ((JSONObject) ((JSONObject) jSteps
-                                    .get(k)).get("polyline")).get("points");
-                            List<LatLng> list = decodePoly(polyline);
-
-                            // l = list;
-
-                            /** Traversing all points */
-                            for (int l = 0; l < list.size(); l++) {
-                                HashMap<String, String> hm = new HashMap<String, String>();
-                                hm.put("lat",
-                                        Double.toString(((LatLng) list.get(l)).latitude));
-                                hm.put("lng",
-                                        Double.toString(((LatLng) list.get(l)).longitude));
-                                path.add(hm);
-                            }
-                        }
-                    }
-                    routes.add(path);
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-            }
-
-            return routes;
-        }
-
-
-        /**
-         * Method to decode polyline points Courtesy :
-         * jeffreysambells.com/2010/05/27
-         * /decoding-polylines-from-google-maps-direction-api-with-java
-         */
-        private List<LatLng> decodePoly(String encoded) {
-
-            List<LatLng> poly = new ArrayList<LatLng>();
-            int index = 0, len = encoded.length();
-            int lat = 0, lng = 0;
-
-            while (index < len) {
-                int b, shift = 0, result = 0;
-                do {
-                    b = encoded.charAt(index++) - 63;
-                    result |= (b & 0x1f) << shift;
-                    shift += 5;
-                } while (b >= 0x20);
-                int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-                lat += dlat;
-
-                shift = 0;
-                result = 0;
-                do {
-                    b = encoded.charAt(index++) - 63;
-                    result |= (b & 0x1f) << shift;
-                    shift += 5;
-                } while (b >= 0x20);
-                int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-                lng += dlng;
-
-                LatLng p = new LatLng((((double) lat / 1E5)),
-                        (((double) lng / 1E5)));
-                poly.add(p);
-            }
-
-            return poly;
-        }
-
-    }
-
-    public void zoomRoute(GoogleMap googleMap, List<LatLng> lstLatLngRoute) {
-        boolean hasPoints = false;
-        Double maxLat = null, minLat = null, minLon = null, maxLon = null;
-
-        List<LatLng> pts = lstLatLngRoute;
-        for (LatLng coordinate : pts) {
-
-            maxLat = maxLat != null ? Math.max(coordinate.latitude, maxLat) : coordinate.latitude;
-            minLat = minLat != null ? Math.min(coordinate.latitude, minLat) : coordinate.latitude;
-
-            maxLon = maxLon != null ? Math.max(coordinate.longitude, maxLon) : coordinate.longitude;
-            minLon = minLon != null ? Math.min(coordinate.longitude, minLon) : coordinate.longitude;
-
-            hasPoints = true;
-        }
-
-        Log.d("debug" , " Max --->"+ maxLat + " , "+maxLon + " , MIN----->"+ minLat+" , "+minLon);
-
-        if (hasPoints) {
-            LatLngBounds latLngBounds = new LatLngBounds(  new LatLng(minLat, minLon), new LatLng(maxLat, maxLon));
-
-            float zoomLevel = 0.0f;
-
-            float f = Float.parseFloat("8.00");
-
-            if (f < 1128) { zoomLevel = 15.5f; }
-            else if ((f > 1128) && (f < 2256)) { zoomLevel = 14.5f; }
-            else if ((f > 2256) && (f < 4513)) { zoomLevel = 13.5f; }
-            else if ((f > 4513) && (f < 9027)) { zoomLevel = 12.5f; }
-            else if ((f > 9027) && (f < 18055)) { zoomLevel = 11.5f; }
-            else if ((f > 18055) && (f < 36111)) { zoomLevel = 10.5f; }
-            else if ((f > 36111) && (f < 722223)){ zoomLevel = 9.5f ; }
-
-
-
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLngBounds.getCenter(), zoomLevel));
-            googleMap.getMinZoomLevel();
-        }
-
-
-
-    }
-
-
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(NearbyHospital.this, MapsActivity.class);
@@ -629,16 +433,6 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
         finish();
     }
 
-
-    public boolean isPackageExisted(String targetPackage){
-        PackageManager pm=getPackageManager();
-        try {
-            PackageInfo info =pm.getPackageInfo(targetPackage,PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-        return true;
-    }
 
     public boolean isGoogleMapsInstalled()
     {
