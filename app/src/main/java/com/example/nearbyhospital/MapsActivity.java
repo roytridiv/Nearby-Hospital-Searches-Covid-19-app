@@ -128,6 +128,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
 
     }
 

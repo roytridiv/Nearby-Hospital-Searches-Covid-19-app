@@ -11,15 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.directions.route.Route;
-import com.directions.route.RouteException;
-import com.directions.route.Routing;
-import com.directions.route.RoutingListener;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -42,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +41,7 @@ import java.util.List;
 
 
 
-public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, RoutingListener {
+public class MakeRoute extends FragmentActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private List<Polyline> polylines;
@@ -61,8 +52,6 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
 
     List<LatLng> l ;
 
-    LinearLayout linearLayout2 ;
-    LottieAnimationView lottieAnimationView ;
     String dis = "";
 
     @Override
@@ -97,8 +86,6 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
                 finish();
             }
         });
-
-
 
 
     }
@@ -140,55 +127,6 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback, R
 
 
     }
-
-    @Override
-    public void onRoutingFailure(RouteException e) {
-        if (e != null) {
-            // Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            Log.d("debug", "Error: " + e.getMessage());
-        } else {
-            Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onRoutingStart() {
-
-    }
-
-    @Override
-    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-
-        if (polylines.size() > 0) {
-            for (Polyline poly : polylines) {
-                poly.remove();
-            }
-        }
-
-        polylines = new ArrayList<>();
-        //add route(s) to the map.
-        for (int i = 0; i < route.size(); i++) {
-
-            //In case of more than 5 alternative routes
-            int colorIndex = i % COLORS.length;
-
-            PolylineOptions polyOptions = new PolylineOptions();
-            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
-            polyOptions.width(10 + i * 3);
-            polyOptions.addAll(route.get(i).getPoints());
-            Polyline polyline = mMap.addPolyline(polyOptions);
-            polylines.add(polyline);
-
-            Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    @Override
-    public void onRoutingCancelled() {
-
-    }
-
 
 
 

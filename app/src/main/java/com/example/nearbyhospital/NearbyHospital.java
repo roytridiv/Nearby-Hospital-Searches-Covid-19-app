@@ -141,10 +141,6 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
                                     }
 
 
-
-
-
-
                                     dialog.cancel();
                                 }
                             });
