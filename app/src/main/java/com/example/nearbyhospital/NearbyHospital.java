@@ -238,7 +238,7 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
                 "location="+lat+","+lng+
                 "&radius=10000" +
                 "&type=hospital" +
-                "&key=AIzaSyBkCNdgswUBcGOk6Yq9Jy0KR--_EUMPaTA");
+                "&key={API_KEY}");
 
 
 
