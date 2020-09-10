@@ -73,7 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         current_location = findViewById(R.id.myLocation);
 
 
-        Places.initialize(getApplicationContext(), "API_KEY");
+        Places.initialize(getApplicationContext(), "AIzaSyDq5gYTlfiBuszmn2IrwQ7T0vxgIBn3Qac");
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MapsActivity.this);
         if(internetOn()){
             if(ok()){

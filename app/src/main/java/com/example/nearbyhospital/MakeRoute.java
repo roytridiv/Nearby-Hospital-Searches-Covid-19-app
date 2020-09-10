@@ -64,7 +64,7 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback{
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Places.initialize(getApplicationContext(), "{API_KEY}");
+        Places.initialize(getApplicationContext(), "AIzaSyDq5gYTlfiBuszmn2IrwQ7T0vxgIBn3Qac");
 
         Intent intent = getIntent();
         //fromMain = intent.getData();
