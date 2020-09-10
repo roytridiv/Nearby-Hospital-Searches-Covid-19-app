@@ -1,10 +1,14 @@
 package com.example.nearbyhospital;
 
 import androidx.annotation.MainThread;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -12,7 +16,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -51,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     boolean current_flag =true;
     Button search_hospitals;
     ImageView current_location ;
+    GoogleApiClient mGoogleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +77,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MapsActivity.this);
         if(internetOn()){
             if(ok()){
+                if(!isLocationEnabled(MapsActivity.this)){
+                    displayPromptForEnablingGPS(MapsActivity.this);
+                }
                 init();
             }
         }
@@ -115,8 +127,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+       // buildGoogleApiClient();
+
         if(internetOn()){
             if(ok()){
+                if(!isLocationEnabled(MapsActivity.this)){
+                    displayPromptForEnablingGPS(MapsActivity.this);
+                    // restartSctivity();
+                }
                 init();
             }
         }
@@ -128,10 +146,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+//        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+//        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+//        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+//        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
 
     }
@@ -195,6 +213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     current_flag = false ;
 
                 }else{
+                    Toast.makeText(MapsActivity.this , "Press the Red Button to get your location" ,Toast.LENGTH_LONG).show();
                     Log.d("debug", "--------------location not found again calling init ------------------");
                     current_flag = true ;
                     init();
@@ -261,4 +280,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return have_wifi || have_data ;
     }
+
+
+    public static void displayPromptForEnablingGPS(
+            final Activity activity)
+    {
+        final AlertDialog.Builder builder =
+                new AlertDialog.Builder(activity);
+        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+        final String message = "Enable either GPS or any other location"
+                + " service to find current location.  Click OK to go to"
+                + " location services settings to let you do so.";
+
+        builder.setMessage(message)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                activity.startActivity(new Intent(action));
+                                d.dismiss();
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                d.cancel();
+                            }
+                        });
+        builder.create().show();
+    }
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+//    protected synchronized void buildGoogleApiClient() {
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+//                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) MapsActivity.this)
+//                .addApi(LocationServices.API)
+//                .build();
+//        mGoogleApiClient.connect();
+//    }
 }

@@ -86,6 +86,8 @@ public class NearbyHospital extends FragmentActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        Toast.makeText(NearbyHospital.this , " Click on any marker to get hospital information" , Toast.LENGTH_LONG).show();
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {

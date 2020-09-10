@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -63,7 +64,7 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback{
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Places.initialize(getApplicationContext(), "AIzaSyDq5gYTlfiBuszmn2IrwQ7T0vxgIBn3Qac");
+        Places.initialize(getApplicationContext(), "{API_KEY}");
 
         Intent intent = getIntent();
         //fromMain = intent.getData();
@@ -131,6 +132,12 @@ public class MakeRoute extends FragmentActivity implements OnMapReadyCallback{
 
 
     public class TaskRequestDirection extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //ProgressBar pg = new ProgressBar();
+        }
 
         @Override
         protected String doInBackground(String... url) {
